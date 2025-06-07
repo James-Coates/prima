@@ -10,11 +10,12 @@
     "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
+    "@repo/ui": "workspace:*",
     "@tanstack/react-router": "^1.120.18",
     "@tanstack/react-router-devtools": "^1.120.18",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "@repo/ui": "workspace:*"
+    "zod": "^3.25.56"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
