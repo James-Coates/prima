@@ -7,8 +7,9 @@ import {
 } from '@tanstack/react-router';
 
 import { useAuth } from '../utils/auth';
-import { sleep } from '../utils/helpers';
 import z from 'zod/v4';
+import { Input } from '@repo/ui/components/input';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 const fallback = '/dashboard' as const;
@@ -18,11 +19,15 @@ export const Route = createFileRoute('/login')({
     redirect: z.string().optional().catch(''),
   }),
   beforeLoad: ({ context, search }) => {
+    if (context.auth.isLoading) {
+      return;
+    }
     if (context.auth.isAuthenticated) {
       throw redirect({ to: search.redirect || fallback });
     }
   },
   component: LoginComponent,
+  pendingComponent: LoadingSpinner,
 });
 
 function LoginComponent() {
@@ -39,17 +44,15 @@ function LoginComponent() {
     try {
       evt.preventDefault();
       const data = new FormData(evt.currentTarget);
-      const fieldValue = data.get('username');
+      const emailValue = data.get('email');
+      const passwordValue = data.get('password');
+      if (!emailValue || !passwordValue) return;
+      const email = emailValue.toString();
+      const password = passwordValue.toString();
 
-      if (!fieldValue) return;
-      const username = fieldValue.toString();
-      await auth.login(username);
+      await auth.login(email, password);
 
       await router.invalidate();
-
-      // This is just a hack being used to wait for the auth state to update
-      // in a real app, you'd want to use a more robust solution
-      await sleep(1);
 
       await navigate({ to: search.redirect || fallback });
     } catch (error) {
@@ -72,14 +75,27 @@ function LoginComponent() {
       <form className="mt-4 max-w-lg" onSubmit={onFormSubmit}>
         <fieldset disabled={isLoggingIn} className="w-full grid gap-2">
           <div className="grid gap-2 items-center min-w-[300px]">
-            <label htmlFor="username-input" className="text-sm font-medium">
-              Username
+            <label htmlFor="email-input" className="text-sm font-medium">
+              Email
             </label>
-            <input
-              id="username-input"
-              name="username"
-              placeholder="Enter your name"
+            <Input
+              id="email-input"
+              name="email"
+              placeholder="Enter your email"
               type="text"
+              className="border rounded-md p-2 w-full"
+              required
+            />
+          </div>
+          <div className="grid gap-2 items-center min-w-[300px]">
+            <label htmlFor="password-input" className="text-sm font-medium">
+              Password
+            </label>
+            <Input
+              id="password-input"
+              name="password"
+              placeholder="Enter your password"
+              type="password"
               className="border rounded-md p-2 w-full"
               required
             />

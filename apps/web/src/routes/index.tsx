@@ -6,6 +6,8 @@ export const Route = createFileRoute('/')({
 });
 
 function Index() {
+  const data = Route.useLoaderData();
+
   return (
     <div className="p-2 grid gap-2">
       <h1 className="text-xl">Welcome!</h1>
@@ -24,6 +26,9 @@ function Index() {
         <strong>authenticated-routes</strong> example.
       </p>
       <p>You can try going through these options.</p>
+
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+
       <ol className="list-disc list-inside px-2">
         <li>
           <Link to="/login" className="text-blue-500 hover:opacity-75">

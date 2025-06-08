@@ -13,6 +13,7 @@
     "@repo/ui": "workspace:*",
     "@tanstack/react-router": "^1.120.18",
     "@tanstack/react-router-devtools": "^1.120.18",
+    "dotenv": "^16.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "zod": "^3.25.56"
